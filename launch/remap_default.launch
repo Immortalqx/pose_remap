@@ -4,6 +4,8 @@
           type="remap_pose_node"
           args=
           "
+          --wait_input=true
+          
           --input_topic_type=PoseWithCovarianceStamped
           --input_topic_name=/ov_msckf/poseimu
           
