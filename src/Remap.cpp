@@ -5,6 +5,9 @@
 
 #define PI 3.1415926535
 
+DEFINE_bool(wait_input,
+            true, "wait input or not");
+
 DEFINE_string(input_topic_type,
               "Odometry", "Available types: PoseStamped, PoseWithCovarianceStamped, Odometry");
 DEFINE_string(input_topic_name,
@@ -87,7 +90,7 @@ Eigen::Quaterniond R_body_imu1;
 
 std::string output_frame_id;
 
-bool wait = true;
+bool received = false;
 
 Remap::Remap()
 = default;
@@ -112,7 +115,7 @@ void Remap::run(int argc, char **argv)
     ddynamic_register();
 
     ros::Rate wait_rate(10);
-    while (ros::ok() && wait)
+    while (ros::ok() && !received && FLAGS_wait_input)
     {
         std::cout << "\033[33m" << "Waiting message from: " << FLAGS_input_topic_name << "\033[0m" << std::endl;
 
@@ -253,7 +256,7 @@ void Remap::vio_pose_cb(const geometry_msgs::PoseStamped_<std::allocator<void>>:
     to_fcu_pose_cov.header.frame_id = output_frame_id;
     to_fcu_pose_cov.pose.pose = tf2::toMsg(T_map_global * pose_in_global_frame);
 
-    wait = false;
+    received = true;
 }
 
 void Remap::vio_pose_cov_cb(const geometry_msgs::PoseWithCovarianceStamped_<std::allocator<void>>::ConstPtr &msg)
@@ -267,7 +270,7 @@ void Remap::vio_pose_cov_cb(const geometry_msgs::PoseWithCovarianceStamped_<std:
     to_fcu_pose_cov.header.frame_id = output_frame_id;
     to_fcu_pose_cov.pose.pose = tf2::toMsg(T_map_global * pose_in_global_frame);
 
-    wait = false;
+    received = true;
 }
 
 void Remap::type_T_map_global_cb(int type)
