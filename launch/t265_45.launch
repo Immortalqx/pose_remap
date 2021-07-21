@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+    <node pkg="pose_remap"
+          name="remap_pose_node"
+          type="remap_pose_node"
+          args=
+          "
+          --wait_input=false
+          
+          --input_topic_type=Odometry
+          --input_topic_name=/camera/odom/sample
+          
+          --output_topic_name=/mavros/vision_pose/pose
+          --output_frame_id=map
+          --output_with_cov=false
+          --output_hz=50
+          
+           --T_map_global_y=0
+           --R_imu1_imu0_p=0.785398163397448
+           --R_body_imu1_r=0
+          "
+          output="screen"
+          required="true">
+    </node>
+</launch>
+
