@@ -1,0 +1,36 @@
+<launch>
+    <node pkg="pose_remap"
+          name="remap_pose_node"
+          type="remap_pose_node"
+          args=
+          "
+          --wait_input=true
+          
+          --input_topic_type=PoseWithCovarianceStamped
+          --input_topic_name=/ov_msckf/poseimu
+          
+          --output_topic_name=/cvr_uav/pose_remap/pose
+          --output_frame_id=map
+          --output_with_cov=false
+          --output_hz=50
+          
+          --T_map_global_tx=0
+          --T_map_global_ty=0
+          --T_map_global_tz=0
+          
+          --T_map_global_r=3.1415926535
+          --T_map_global_p=0
+          --T_map_global_y=0
+          
+          --R_imu1_imu0_r=0
+          --R_imu1_imu0_p=0
+          --R_imu1_imu0_y=0
+          
+          --R_body_imu1_r=0
+          --R_body_imu1_p=0
+          --R_body_imu1_y=0
+          "
+          output="screen"
+          required="true">
+    </node>
+</launch>
