@@ -20,13 +20,13 @@
           
           --T_map_global_r=0
           --T_map_global_p=0
-          --T_map_global_y=-1.57079632
+          --T_map_global_y=0
           
           --R_imu1_imu0_r=0
-          --R_imu1_imu0_p=1.57079632
+          --R_imu1_imu0_p=0
           --R_imu1_imu0_y=0
           
-          --R_body_imu1_r=-1.57079632
+          --R_body_imu1_r=0
           --R_body_imu1_p=0
           --R_body_imu1_y=0
           "
