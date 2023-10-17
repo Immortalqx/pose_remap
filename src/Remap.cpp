@@ -133,8 +133,7 @@ void Remap::run(int argc, char **argv)
         if (FLAGS_output_with_cov)
         {
             pose_pub.publish(to_fcu_pose_cov);
-        }
-        else
+        } else
         {
             geometry_msgs::PoseStamped to_fcu_pose;
             to_fcu_pose.header = to_fcu_pose_cov.header;
@@ -180,8 +179,7 @@ ros::Publisher Remap::make_publisher(ros::NodeHandle &nh)
     if (FLAGS_output_with_cov)
     {
         pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>(FLAGS_output_topic_name, 1);
-    }
-    else
+    } else
     {
         pub = nh.advertise<geometry_msgs::PoseStamped>(FLAGS_output_topic_name, 1);
     }
@@ -194,13 +192,11 @@ ros::Subscriber Remap::make_subscriber(ros::NodeHandle &nh)
     if (FLAGS_input_topic_type == "PoseStamped")
     {
         sub = nh.subscribe<geometry_msgs::PoseStamped>(FLAGS_input_topic_name, 1, vio_pose_cb);
-    }
-    else if (FLAGS_input_topic_type == "PoseWithCovarianceStamped")
+    } else if (FLAGS_input_topic_type == "PoseWithCovarianceStamped")
     {
         sub = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>(FLAGS_input_topic_name, 1,
                                                                      vio_pose_cov_cb);
-    }
-    else if (FLAGS_input_topic_type == "Odometry")
+    } else if (FLAGS_input_topic_type == "Odometry")
     {
         sub = nh.subscribe<nav_msgs::Odometry>(FLAGS_input_topic_name, 1, vio_odom_cb);
     }

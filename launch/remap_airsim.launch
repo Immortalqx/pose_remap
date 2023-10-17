@@ -10,7 +10,7 @@
           --input_topic_name=/ov_msckf/poseimu
           
           --output_topic_name=/cvr_uav/pose_remap/pose
-          --output_frame_id=map
+          --output_frame_id=global
           --output_with_cov=false
           --output_hz=50
           
