@@ -19,6 +19,8 @@ DEFINE_string(output_frame_id,
               "odom", "the frame id of the output pose");
 DEFINE_bool(output_with_cov,
             false, "whether output with cov");
+DEFINE_bool(output_wait_update,
+            true, "whether wait odom_update");
 DEFINE_double(output_hz,
               50, "the rate of output to fcu");
 
@@ -91,6 +93,7 @@ Eigen::Quaterniond R_body_imu1;
 std::string output_frame_id;
 
 bool received = false;
+bool received_update = false;
 
 Remap::Remap()
 = default;
@@ -130,15 +133,19 @@ void Remap::run(int argc, char **argv)
     ros::Rate publish_rate(FLAGS_output_hz);
     while (ros::ok())
     {
-        if (FLAGS_output_with_cov)
+        if (!FLAGS_output_wait_update || received_update)
         {
-            pose_pub.publish(to_fcu_pose_cov);
-        } else
-        {
-            geometry_msgs::PoseStamped to_fcu_pose;
-            to_fcu_pose.header = to_fcu_pose_cov.header;
-            to_fcu_pose.pose = to_fcu_pose_cov.pose.pose;
-            pose_pub.publish(to_fcu_pose);
+            if (FLAGS_output_with_cov)
+            {
+                pose_pub.publish(to_fcu_pose_cov);
+            } else
+            {
+                geometry_msgs::PoseStamped to_fcu_pose;
+                to_fcu_pose.header = to_fcu_pose_cov.header;
+                to_fcu_pose.pose = to_fcu_pose_cov.pose.pose;
+                pose_pub.publish(to_fcu_pose);
+            }
+            received_update = false;
         }
         ros::spinOnce();
         publish_rate.sleep();
@@ -239,6 +246,9 @@ void Remap::vio_odom_cb(const nav_msgs::Odometry_<std::allocator<void>>::ConstPt
     to_fcu_pose_cov.header.stamp = ros::Time::now();
     to_fcu_pose_cov.header.frame_id = output_frame_id;
     to_fcu_pose_cov.pose.pose = tf2::toMsg(T_map_global * pose_in_global_frame);
+
+    received = true;
+    received_update = true;
 }
 
 void Remap::vio_pose_cb(const geometry_msgs::PoseStamped_<std::allocator<void>>::ConstPtr &msg)
@@ -253,6 +263,7 @@ void Remap::vio_pose_cb(const geometry_msgs::PoseStamped_<std::allocator<void>>:
     to_fcu_pose_cov.pose.pose = tf2::toMsg(T_map_global * pose_in_global_frame);
 
     received = true;
+    received_update = true;
 }
 
 void Remap::vio_pose_cov_cb(const geometry_msgs::PoseWithCovarianceStamped_<std::allocator<void>>::ConstPtr &msg)
@@ -267,6 +278,7 @@ void Remap::vio_pose_cov_cb(const geometry_msgs::PoseWithCovarianceStamped_<std:
     to_fcu_pose_cov.pose.pose = tf2::toMsg(T_map_global * pose_in_global_frame);
 
     received = true;
+    received_update = true;
 }
 
 void Remap::type_T_map_global_cb(int type)

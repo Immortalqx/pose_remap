@@ -6,19 +6,20 @@
           "
           --wait_input=true
           
-          --input_topic_type=PoseWithCovarianceStamped
-          --input_topic_name=/ov_msckf/poseimu
+          --input_topic_type=Odometry
+          --input_topic_name=/ov_msckf/odomimu
           
           --output_topic_name=/cvr_uav/pose_remap/pose
           --output_frame_id=global
           --output_with_cov=false
-          --output_hz=50
+          --output_wait_update=true
+          --output_hz=100
           
           --T_map_global_tx=0
           --T_map_global_ty=0
           --T_map_global_tz=0
           
-          --T_map_global_r=3.1415926535
+          --T_map_global_r=0
           --T_map_global_p=0
           --T_map_global_y=0
           
